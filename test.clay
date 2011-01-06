@@ -1,0 +1,51 @@
+import ao.*;
+import libc.(sin);
+
+main() {
+	/* -- Initialize -- */
+	
+	printlnTo(stderr, "clay libao bindings example program");
+
+	ao_initialize();
+
+	/* -- Setup for default driver -- */
+
+	var defaultDriver = ao_default_driver_id();
+
+	var format = Struct_ao_sample_format(16, 44100, 2, AO_FMT_LITTLE, null(CChar));
+
+	/* -- Open driver -- */
+	var device = ao_open_live(defaultDriver, &format, null(Struct_ao_option) /* no options */);
+	if(null?(device)) {
+		printlnTo(stderr, "Error opening device.\n");
+		return 1;
+	}
+
+	/* -- Play some stuff -- */
+	var size = UInt(format.bits/8 * format.channels * format.rate);
+	var buf = allocateRawMemory(Byte, size);
+
+	alias PI = 3.14159265358979323846;
+	alias freq = 440.0;
+
+	for(i in range(format.rate)) {
+		var sample = Int(0.75 * 32768.0 *
+		    sin(2 * PI * freq * (Float(i)/format.rate)));
+
+		/* Put the same stuff in left and right channel */
+		var left = Byte(bitwiseAnd(sample, 0xFF));
+		var right = Byte(bitwiseAnd(shiftRight(sample, 8), 0xFF));
+		buf[4*i] = left;
+		buf[4*i+2] = left;
+		buf[4*i+1] = right;
+		buf[4*i+3] = right;
+    }
+	ao_play(device, Pointer[CChar](buf), size);
+
+	/* -- Close and shutdown -- */
+	ao_close(device);
+
+	ao_shutdown();
+
+	return 0;
+}

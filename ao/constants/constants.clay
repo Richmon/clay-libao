@@ -1,0 +1,17 @@
+alias AO_TYPE_LIVE   = 1;
+alias AO_TYPE_FILE   = 2;
+
+alias AO_ENODRIVER   = 1;
+alias AO_ENOTFILE    = 2;
+alias AO_ENOTLIVE    = 3;
+alias AO_EBADOPTION  = 4;
+alias AO_EOPENDEVICE = 5;
+alias AO_EOPENFILE   = 6;
+alias AO_EFILEEXISTS = 7;
+alias AO_EBADFORMAT  = 8;
+
+alias AO_EFAIL       = 100;
+
+alias AO_FMT_LITTLE  = 1;
+alias AO_FMT_BIG     = 2;
+alias AO_FMT_NATIVE  = 4;
